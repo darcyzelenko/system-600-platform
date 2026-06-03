@@ -1,0 +1,170 @@
+{
+  "platform": {
+    "system": {
+      "id": "SYSTEM_600",
+      "name": "System 600",
+      "version": "0.1.0",
+      "description": "A 600 mm grid-based building system for industrialised housing delivery.\n"
+    },
+    "grid": {
+      "primary_increment_mm": 600,
+      "secondary_increment_mm": 300
+    },
+    "module_sizes": {
+      "permitted_widths_mm": [
+        600,
+        1200,
+        1800,
+        2400,
+        3000,
+        3600,
+        4200,
+        4800,
+        5400,
+        6000
+      ],
+      "preferred_widths_mm": [
+        1200,
+        2400,
+        3600
+      ]
+    },
+    "tolerances": {
+      "manufacturing_mm": 2,
+      "site_installation_mm": 5,
+      "interface_allowance_mm": 10
+    },
+    "handling": {
+      "preferred_max_panel_mass_kg": 500,
+      "absolute_max_panel_mass_kg": 1500,
+      "lifting_safety_factor": 2.5
+    },
+    "status": {
+      "maturity": "concept",
+      "design_freeze": false
+    }
+  },
+  "modules": [
+    "PART_LIFTING_INSERT_M16_001",
+    "PART_SLOTTED_BASE_BRACKET_001"
+  ],
+  "parts": [
+    {
+      "id": "PART_LIFTING_INSERT_M16_001",
+      "name": "M16 lifting insert",
+      "type": "lifting_insert",
+      "material": "galvanised_steel",
+      "load_rating_kg": 750,
+      "compatible_lifting_methods": [
+        "two_point_lift_with_spreader_bar"
+      ],
+      "inspection_required": true,
+      "status": {
+        "maturity": "provisional"
+      }
+    },
+    {
+      "id": "PART_LIFTING_INSERT_M16_001",
+      "name": "M16 lifting insert",
+      "type": "lifting_insert",
+      "material": "galvanised_steel",
+      "load_rating_kg": 750,
+      "compatible_lifting_methods": [
+        "two_point_lift_with_spreader_bar"
+      ],
+      "inspection_required": true,
+      "status": {
+        "maturity": "provisional"
+      }
+    }
+  ],
+  "interfaces": [
+    {
+      "id": "IF_WALL_TO_FLOOR_001",
+      "name": "Wall panel to floor cassette interface",
+      "type": "wall_to_floor",
+      "from_module_type": "wall_panel",
+      "to_module_type": "floor_cassette",
+      "required_ports": {
+        "from": "base",
+        "to": "support_zone"
+      },
+      "connection_methods": [
+        "PART_SLOTTED_BASE_BRACKET_001"
+      ],
+      "geometric_rules": {
+        "requires_grid_alignment": true,
+        "max_offset_from_grid_mm": 10,
+        "minimum_edge_distance_mm": 50
+      },
+      "tolerance_strategy": {
+        "type": "slotted_connection",
+        "adjustment_x_mm": 15,
+        "adjustment_y_mm": 5,
+        "adjustment_z_mm": 10
+      },
+      "inspection_points": [
+        "base_bracket_installed",
+        "bolt_torque_checked",
+        "packing_verified",
+        "fire_seal_completed"
+      ],
+      "status": {
+        "maturity": "prototype_tested",
+        "design_freeze": false
+      },
+      "evidence": [
+        "PROTO_WALL_FLOOR_001"
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "id": "RULE_GRID_WIDTH",
+      "name": "Module width must use permitted System 600 width",
+      "applies_to": "module",
+      "severity": "error",
+      "check": {
+        "type": "permitted_width",
+        "field": "dimensions_mm.width",
+        "source": "system.module_sizes.permitted_widths_mm"
+      }
+    },
+    {
+      "id": "RULE_INTERFACE_COMPATIBILITY",
+      "name": "Module must only reference defined compatible interfaces",
+      "applies_to": "module",
+      "severity": "error",
+      "check": {
+        "type": "interface_reference_exists",
+        "field": "allowed_interfaces",
+        "source": "interfaces"
+      }
+    },
+    {
+      "id": "RULE_LIFTING_CAPACITY",
+      "name": "Combined lifting point capacity must exceed module mass with safety factor",
+      "applies_to": "module",
+      "severity": "error",
+      "check": {
+        "type": "lifting_capacity",
+        "mass_field": "mass_kg",
+        "lifting_points_field": "lifting_points",
+        "safety_factor_source": "system.handling.lifting_safety_factor"
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "id": "RULE_INTERFACE_COMPATIBILITY",
+      "name": "Module must only reference defined compatible interfaces",
+      "applies_to": "module",
+      "severity": "error",
+      "check": {
+        "type": "interface_reference_exists",
+        "field": "allowed_interfaces",
+        "source": "interfaces"
+      }
+    }
+  ]
+}
