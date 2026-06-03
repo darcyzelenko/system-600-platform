@@ -1,0 +1,71 @@
+id: WALL_1200_2700_EXT_A
+name: External wall panel 1200 x 2700 Type A
+type: wall_panel
+category: external_wall
+
+dimensions_mm:
+  width: 1200
+  height: 2700
+  depth: 250
+
+mass_kg: 190
+
+grid:
+  width_increment_mm: 600
+  grid_aligned: true
+
+performance:
+  structural_role: loadbearing
+  fire_rating: TBC
+  acoustic_rating: TBC
+  thermal_rating: TBC
+
+parts:
+  - PART_LIFTING_INSERT_M16_001
+  - PART_SLOTTED_BASE_BRACKET_001
+
+ports:
+  - id: left_edge
+    type: vertical_edge_connection
+    location: left_edge
+
+  - id: right_edge
+    type: vertical_edge_connection
+    location: right_edge
+
+  - id: base
+    type: floor_connection
+    location: bottom_edge
+
+  - id: head
+    type: lintel_or_upper_wall_connection
+    location: top_edge
+
+lifting_points:
+  - id: LP_01
+    x_mm: 300
+    y_mm: 125
+    z_mm: 2500
+    load_rating_kg: 750
+
+  - id: LP_02
+    x_mm: 900
+    y_mm: 125
+    z_mm: 2500
+    load_rating_kg: 750
+
+allowed_interfaces:
+  - IF_WALL_TO_FLOOR_001
+
+validation_rules:
+  - RULE_GRID_WIDTH
+  - RULE_LIFTING_CAPACITY
+  - RULE_INTERFACE_COMPATIBILITY
+
+status:
+  maturity: concept_prototype
+  design_freeze: false
+  version: 0.1.0
+
+evidence:
+  - PROTO_WALL_FLOOR_001

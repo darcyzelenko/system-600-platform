@@ -46,6 +46,8 @@
   },
   "modules": [
     "PART_LIFTING_INSERT_M16_001",
+    "PART_SLOTTED_BASE_BRACKET_001",
+    "PART_LIFTING_INSERT_M16_001",
     "PART_SLOTTED_BASE_BRACKET_001"
   ],
   "parts": [
