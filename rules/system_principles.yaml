@@ -1,0 +1,112 @@
+rules:
+  - id: RULE_SYSTEM_OPEN_CURATED
+    name: System shall operate as an open curated system
+    applies_to: system
+    severity: principle
+    rule_strength: design_principle
+    description: >
+      System 600 should avoid proprietary lock-in while allowing third-party
+      components and suppliers to participate through shared rules, principles,
+      requirements, and a licensing framework.
+    source:
+      document: DigiComm25-Daryl-Patterson.pdf
+      basis: Open curated system; avoids proprietary lock-in; integration managed by rules and principles.
+
+  - id: RULE_INTEGRATION_MANAGED_BY_SYSTEM_RULES
+    name: Component integration shall be governed by system rules
+    applies_to: component
+    severity: error
+    rule_strength: hard_rule
+    description: >
+      Components shall only be integrated into System 600 where they satisfy
+      relevant system principles, design rules, component requirements, and schema.
+    check:
+      type: requires_system_validation
+
+  - id: RULE_MINIMUM_STANDARDISATION_TARGET
+    name: Target at least 80 percent standardisation
+    applies_to: project_instance
+    severity: warning
+    rule_strength: soft_rule
+    description: >
+      System configurations should minimise unique parts and maximise use of
+      limited SKUs, with a target of at least 80 percent standardisation.
+    target_standardisation_percent: 80
+    check:
+      type: standardisation_ratio
+      minimum_percent: 80
+
+  - id: RULE_FIXED_FLEXIBLE_FREE_CLASSIFICATION
+    name: Components require fixed flexible free classification
+    applies_to: component
+    severity: error
+    rule_strength: hard_rule
+    description: >
+      Each component shall be classified as fixed, flexible, or free to indicate
+      where design freedom is permitted and where standardisation must be preserved.
+    required_field: flexibility_class
+    allowed_values:
+      - fixed
+      - flexible
+      - free
+    check:
+      type: required_field_enum
+      field: flexibility_class
+      allowed_values:
+        - fixed
+        - flexible
+        - free
+
+  - id: RULE_COMPONENT_REQUIRES_SUBSYSTEM
+    name: Components require subsystem classification
+    applies_to: component
+    severity: error
+    rule_strength: hard_rule
+    description: >
+      Every component shall be assigned to a System 600 subsystem.
+    required_field: subsystem
+    allowed_values:
+      - structure
+      - services
+      - interior
+      - exterior
+      - performance_layer
+      - architectural_layer
+    check:
+      type: required_field_enum
+      field: subsystem
+      allowed_values:
+        - structure
+        - services
+        - interior
+        - exterior
+        - performance_layer
+        - architectural_layer
+
+  - id: RULE_SMART_INTERFACES
+    name: Interfaces shall support interchangeability installation and disassembly
+    applies_to: interface
+    severity: warning
+    rule_strength: design_principle
+    description: >
+      Component interfaces should be designed for interchangeability, simplified
+      installation, and disassembly.
+    required_properties:
+      - interchangeable
+      - installable
+      - demountable
+
+  - id: RULE_COMPONENT_DATA_AT_APPROPRIATE_FIDELITY
+    name: Component data shall support appropriate fidelity levels
+    applies_to: component
+    severity: warning
+    rule_strength: digital_platform_rule
+    description: >
+      Component data should be available at appropriate fidelity levels for
+      design, procurement, logistics, fabrication, and installation.
+    fidelity_levels:
+      - concept
+      - coordination
+      - procurement
+      - fabrication
+      - installation

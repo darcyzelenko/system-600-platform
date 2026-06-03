@@ -1,0 +1,148 @@
+rules:
+  - id: RULE_SERVICES_PACKAGED_IN_DEDICATED_MODULES
+    name: Services shall be packaged into dedicated modules and racks
+    applies_to: services_system
+    severity: warning
+    rule_strength: design_principle
+    description: >
+      Services should be packaged into defined components, including an external
+      services module, vertical riser rack, and horizontal distribution rack.
+    required_service_components:
+      - external_services_module
+      - vertical_service_rack
+      - horizontal_service_rack
+
+  - id: RULE_ESM_CONTAINS_ALL_SERVICES_EXCEPT_SEWER
+    name: External Services Module contains all services except sewer
+    applies_to: external_services_module
+    severity: warning
+    rule_strength: soft_rule
+    description: >
+      The External Services Module should accommodate riser and service functions
+      for all services except sewer.
+    included_services:
+      - hot_water_generation
+      - air_conditioning
+      - unit_distribution_board
+      - exhaust_ventilation
+      - fresh_air_supply
+      - stormwater_drainage
+      - data_network_services
+      - lighting_low_voltage_drivers
+    excluded_services:
+      - sewer
+
+  - id: RULE_VERTICAL_RISER_RACK_OUTSIDE_BEHIND_ESM
+    name: Vertical riser rack located outside behind ESM
+    applies_to: vertical_service_rack
+    severity: warning
+    rule_strength: spatial_rule
+    description: >
+      Vertical service racks should be located outside the dwelling, behind the
+      External Services Module.
+    location_requirement:
+      relative_to: external_services_module
+      position: outside_behind
+
+  - id: RULE_HORIZONTAL_SERVICE_RACK_CONNECTS_TO_FACADE
+    name: Horizontal service rack connects to facade services
+    applies_to: horizontal_service_rack
+    severity: warning
+    rule_strength: services_interface_rule
+    description: >
+      Horizontal service racks should connect to the facade or external service
+      zone for air intake, exhaust, and refrigerant lines.
+    required_connections:
+      - air_intake
+      - exhaust
+      - refrigerant_lines
+
+  - id: RULE_HORIZONTAL_SERVICE_RACK_DISTRIBUTES_INTERNAL_SERVICES
+    name: Horizontal service rack distributes lighting sprinklers and power
+    applies_to: horizontal_service_rack
+    severity: warning
+    rule_strength: services_rule
+    description: >
+      Horizontal service racks should distribute lighting, sprinklers, and power.
+    distributed_services:
+      - lighting
+      - sprinklers
+      - power
+
+  - id: RULE_SHARED_KITCHEN_BATHROOM_WET_SERVICES
+    name: Kitchen and bathroom should share wet services
+    applies_to: dwelling_layout
+    severity: warning
+    rule_strength: layout_services_rule
+    description: >
+      Kitchen and bathroom wet services should be co-located or closely
+      coordinated to allow shared sewer and hot/cold water supply routes.
+    services:
+      - sewer
+      - hot_water
+      - cold_water
+
+  - id: RULE_REDUCE_RISERS_OVERHEAD_WORK_AND_FIRE_CELL_PENETRATIONS
+    name: Reduce risers overhead work and fire-cell penetrations
+    applies_to: dwelling_layout
+    severity: warning
+    rule_strength: constructability_rule
+    description: >
+      Service layouts should minimise riser count, overhead service work, and
+      fire-cell penetrations.
+    metrics:
+      - riser_count
+      - overhead_service_length
+      - fire_cell_penetration_count
+
+  - id: RULE_HSR_BRACKETS_AT_600_CENTRES
+    name: Horizontal service rack brackets at 600 mm centres
+    applies_to: horizontal_service_rack
+    severity: error
+    rule_strength: hard_rule
+    description: >
+      Framed brackets for the horizontal service rack shall be preassembled and
+      mounted at every 600 mm to the slab and wall.
+    bracket_spacing_mm: 600
+    check:
+      type: spacing_equals
+      field: bracket_spacing_mm
+      value_mm: 600
+
+  - id: RULE_HSR_DEMOUNTABLE_FINISH_PANEL
+    name: Horizontal service rack requires demountable finish panel
+    applies_to: horizontal_service_rack
+    severity: warning
+    rule_strength: maintenance_rule
+    description: >
+      Horizontal service racks should use demountable interior finish panels to
+      support access, serviceability, and installation.
+    required_component:
+      - demountable_interior_finish_panel
+
+  - id: RULE_ESM_MODULAR_CHASSIS
+    name: External Services Module shall use modular chassis
+    applies_to: external_services_module
+    severity: warning
+    rule_strength: handling_maintenance_rule
+    description: >
+      The External Services Module should use a modular chassis that can be
+      lifted as a single assembly or broken down into two cabinets for removal
+      without crane via elevator.
+    handling_modes:
+      - single_assembly_lift
+      - two_cabinet_breakdown
+    removal_without_crane: true
+    requires_elevator_removal_check: true
+
+  - id: RULE_ESM_PRETERMINATED_WIRING
+    name: External Services Module includes pre-terminated wiring
+    applies_to: external_services_module
+    severity: warning
+    rule_strength: services_prefabrication_rule
+    description: >
+      The External Services Module should include pre-terminated wiring loom
+      provision for power and lighting, transported within the ESM.
+    required_services:
+      - power
+      - lighting

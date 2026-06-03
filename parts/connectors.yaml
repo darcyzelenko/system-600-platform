@@ -1,11 +1,23 @@
 parts:
-  - id: PART_LIFTING_INSERT_M16_001
-    name: M16 lifting insert
-    type: lifting_insert
+  - id: PART_SLOTTED_BASE_BRACKET_001
+    name: Slotted base bracket
+    type: connector
     material: galvanised_steel
-    load_rating_kg: 750
-    compatible_lifting_methods:
-      - two_point_lift_with_spreader_bar
+
+    compatible_interfaces:
+      - IF_WALL_TO_FLOOR_001
+
+    tolerance_capacity_mm:
+      x: 15
+      y: 5
+      z: 10
+
+    required_fixings:
+      - M12_bolt
+      - washer
+      - shim_pack
+
     inspection_required: true
+
     status:
-      maturity: provisional
+      maturity: prototype_tested

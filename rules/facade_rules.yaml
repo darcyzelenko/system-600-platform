@@ -1,0 +1,57 @@
+rules:
+  - id: RULE_COMPLEXITY_DECOUPLING
+    name: Decouple complex engineering from architectural flexibility
+    applies_to: facade_system
+    severity: principle
+    rule_strength: design_principle
+    description: >
+      System 600 should decouple standardised performance and engineering layers
+      from flexible architectural and aesthetic layers.
+
+  - id: RULE_WALL_FINISH_DECOUPLED_FROM_FRAME
+    name: Wall finish decoupled from wall frame
+    applies_to: exterior_wall
+    severity: warning
+    rule_strength: facade_rule
+    description: >
+      Exterior wall finish should be decoupled from the wall frame to allow
+      architectural variation without redesigning the underlying structural or
+      performance system.
+
+  - id: RULE_MULTI_LAYER_UNITISED_FACADE
+    name: Facade uses multi-layer unitised logic
+    applies_to: facade_system
+    severity: warning
+    rule_strength: facade_architecture_rule
+    description: >
+      Exterior systems should use a multi-layer unitised logic, separating
+      universal backplane, performance layer, connector or rail, and
+      architectural feature layer.
+    required_layers:
+      - universal_backplane
+      - performance_layer
+      - connector_or_j_rail
+      - architectural_layer
+    optional_layers:
+      - architectural_feature
+      - shroud
+
+  - id: RULE_STANDARDISED_GLAZING_AND_WEATHERPROOFING
+    name: Standardised glazing and weatherproofing
+    applies_to: facade_panel
+    severity: warning
+    rule_strength: facade_rule
+    description: >
+      Facade components should use standardised glazing units and consistent
+      weatherproofing details.
+
+  - id: RULE_CONTINUOUS_FIXING_RAIL
+    name: Facade layers use continuous fixing rail
+    applies_to: facade_interface
+    severity: warning
+    rule_strength: interface_rule
+    description: >
+      Facade architectural and performance layers should connect through a
+      standardised continuous fixing rail or equivalent connector system.
+    connector_types:
+      - j_rail

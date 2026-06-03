@@ -52,17 +52,26 @@
   ],
   "parts": [
     {
-      "id": "PART_LIFTING_INSERT_M16_001",
-      "name": "M16 lifting insert",
-      "type": "lifting_insert",
+      "id": "PART_SLOTTED_BASE_BRACKET_001",
+      "name": "Slotted base bracket",
+      "type": "connector",
       "material": "galvanised_steel",
-      "load_rating_kg": 750,
-      "compatible_lifting_methods": [
-        "two_point_lift_with_spreader_bar"
+      "compatible_interfaces": [
+        "IF_WALL_TO_FLOOR_001"
+      ],
+      "tolerance_capacity_mm": {
+        "x": 15,
+        "y": 5,
+        "z": 10
+      },
+      "required_fixings": [
+        "M12_bolt",
+        "washer",
+        "shim_pack"
       ],
       "inspection_required": true,
       "status": {
-        "maturity": "provisional"
+        "maturity": "prototype_tested"
       }
     },
     {
@@ -122,6 +131,153 @@
   ],
   "rules": [
     {
+      "id": "RULE_PRIMARY_GRID_600",
+      "name": "Components shall coordinate with the 600 mm system grid",
+      "applies_to": "module",
+      "severity": "error",
+      "rule_strength": "hard_rule",
+      "description": "Primary component dimensions shall coordinate with the 600 mm System 600 grid.\n",
+      "primary_grid_mm": 600,
+      "check": {
+        "type": "grid_increment",
+        "field": "dimensions_mm.width",
+        "increment_mm": 600
+      }
+    },
+    {
+      "id": "RULE_WALL_STANDARD_WIDTHS",
+      "name": "Wall panels shall use standard System 600 widths",
+      "applies_to": "wall_panel",
+      "severity": "error",
+      "rule_strength": "hard_rule",
+      "description": "Wall panels shall use the standard System 600 wall widths identified in the component concepts.\n",
+      "permitted_widths_mm": [
+        1200,
+        1800,
+        2400,
+        3000,
+        3600,
+        6000
+      ],
+      "check": {
+        "type": "permitted_width",
+        "field": "dimensions_mm.width",
+        "permitted_values": [
+          1200,
+          1800,
+          2400,
+          3000,
+          3600,
+          6000
+        ]
+      }
+    },
+    {
+      "id": "RULE_STANDARDISED_EXTERIOR_BAY_SIZES",
+      "name": "Exterior bay assemblies should use standardised dimensions",
+      "applies_to": "facade_panel",
+      "severity": "warning",
+      "rule_strength": "inferred_rule",
+      "description": "Exterior facade and window assemblies should use standardised bay dimensions derived from the System 600 standardised size diagrams.\n",
+      "permitted_widths_mm": [
+        600,
+        1200,
+        2400
+      ],
+      "permitted_heights_mm": [
+        1200,
+        1400,
+        2200
+      ]
+    },
+    {
+      "id": "RULE_FOCUS_ON_ELEMENT_AND_SUBSYSTEM_GRANULARITY",
+      "name": "System should prioritise repeatable element and subsystem granularity",
+      "applies_to": "system",
+      "severity": "principle",
+      "rule_strength": "design_principle",
+      "description": "System 600 should prioritise repeatable components around element, sub-element, and selected subsystem scale, rather than relying primarily on whole-building or whole-dwelling volumetric modules.\n",
+      "preferred_granularity": [
+        "element",
+        "sub_element",
+        "subsystem"
+      ],
+      "avoid_as_default": [
+        "whole_building",
+        "whole_dwelling"
+      ]
+    },
+    {
+      "id": "RULE_2D_COMPONENTS_PREFERRED",
+      "name": "Flat and panelised components preferred over full volumetric modules",
+      "applies_to": "module",
+      "severity": "principle",
+      "rule_strength": "design_principle",
+      "description": "System 600 should prioritise flat and panelised components over full volumetric modularisation, except where pods or service modules provide strategic system value.\n",
+      "preferred_component_format": [
+        "flat_component",
+        "panelised_component"
+      ],
+      "exceptions": [
+        "bathroom_pod",
+        "laundry_pod",
+        "external_services_module"
+      ]
+    },
+    {
+      "id": "RULE_COMPLEXITY_DECOUPLING",
+      "name": "Decouple complex engineering from architectural flexibility",
+      "applies_to": "facade_system",
+      "severity": "principle",
+      "rule_strength": "design_principle",
+      "description": "System 600 should decouple standardised performance and engineering layers from flexible architectural and aesthetic layers.\n"
+    },
+    {
+      "id": "RULE_WALL_FINISH_DECOUPLED_FROM_FRAME",
+      "name": "Wall finish decoupled from wall frame",
+      "applies_to": "exterior_wall",
+      "severity": "warning",
+      "rule_strength": "facade_rule",
+      "description": "Exterior wall finish should be decoupled from the wall frame to allow architectural variation without redesigning the underlying structural or performance system.\n"
+    },
+    {
+      "id": "RULE_MULTI_LAYER_UNITISED_FACADE",
+      "name": "Facade uses multi-layer unitised logic",
+      "applies_to": "facade_system",
+      "severity": "warning",
+      "rule_strength": "facade_architecture_rule",
+      "description": "Exterior systems should use a multi-layer unitised logic, separating universal backplane, performance layer, connector or rail, and architectural feature layer.\n",
+      "required_layers": [
+        "universal_backplane",
+        "performance_layer",
+        "connector_or_j_rail",
+        "architectural_layer"
+      ],
+      "optional_layers": [
+        "architectural_feature",
+        "shroud"
+      ]
+    },
+    {
+      "id": "RULE_STANDARDISED_GLAZING_AND_WEATHERPROOFING",
+      "name": "Standardised glazing and weatherproofing",
+      "applies_to": "facade_panel",
+      "severity": "warning",
+      "rule_strength": "facade_rule",
+      "description": "Facade components should use standardised glazing units and consistent weatherproofing details.\n"
+    },
+    {
+      "id": "RULE_CONTINUOUS_FIXING_RAIL",
+      "name": "Facade layers use continuous fixing rail",
+      "applies_to": "facade_interface",
+      "severity": "warning",
+      "rule_strength": "interface_rule",
+      "description": "Facade architectural and performance layers should connect through a standardised continuous fixing rail or equivalent connector system.\n",
+      "connector_types": [
+        "j_rail"
+      ]
+    },
+    {
       "id": "RULE_GRID_WIDTH",
       "name": "Module width must use permitted System 600 width",
       "applies_to": "module",
@@ -154,19 +310,313 @@
         "lifting_points_field": "lifting_points",
         "safety_factor_source": "system.handling.lifting_safety_factor"
       }
+    },
+    {
+      "id": "RULE_SERVICES_PACKAGED_IN_DEDICATED_MODULES",
+      "name": "Services shall be packaged into dedicated modules and racks",
+      "applies_to": "services_system",
+      "severity": "warning",
+      "rule_strength": "design_principle",
+      "description": "Services should be packaged into defined components, including an external services module, vertical riser rack, and horizontal distribution rack.\n",
+      "required_service_components": [
+        "external_services_module",
+        "vertical_service_rack",
+        "horizontal_service_rack"
+      ]
+    },
+    {
+      "id": "RULE_ESM_CONTAINS_ALL_SERVICES_EXCEPT_SEWER",
+      "name": "External Services Module contains all services except sewer",
+      "applies_to": "external_services_module",
+      "severity": "warning",
+      "rule_strength": "soft_rule",
+      "description": "The External Services Module should accommodate riser and service functions for all services except sewer.\n",
+      "included_services": [
+        "hot_water_generation",
+        "air_conditioning",
+        "unit_distribution_board",
+        "exhaust_ventilation",
+        "fresh_air_supply",
+        "stormwater_drainage",
+        "data_network_services",
+        "lighting_low_voltage_drivers"
+      ],
+      "excluded_services": [
+        "sewer"
+      ]
+    },
+    {
+      "id": "RULE_VERTICAL_RISER_RACK_OUTSIDE_BEHIND_ESM",
+      "name": "Vertical riser rack located outside behind ESM",
+      "applies_to": "vertical_service_rack",
+      "severity": "warning",
+      "rule_strength": "spatial_rule",
+      "description": "Vertical service racks should be located outside the dwelling, behind the External Services Module.\n",
+      "location_requirement": {
+        "relative_to": "external_services_module",
+        "position": "outside_behind"
+      }
+    },
+    {
+      "id": "RULE_HORIZONTAL_SERVICE_RACK_CONNECTS_TO_FACADE",
+      "name": "Horizontal service rack connects to facade services",
+      "applies_to": "horizontal_service_rack",
+      "severity": "warning",
+      "rule_strength": "services_interface_rule",
+      "description": "Horizontal service racks should connect to the facade or external service zone for air intake, exhaust, and refrigerant lines.\n",
+      "required_connections": [
+        "air_intake",
+        "exhaust",
+        "refrigerant_lines"
+      ]
+    },
+    {
+      "id": "RULE_HORIZONTAL_SERVICE_RACK_DISTRIBUTES_INTERNAL_SERVICES",
+      "name": "Horizontal service rack distributes lighting sprinklers and power",
+      "applies_to": "horizontal_service_rack",
+      "severity": "warning",
+      "rule_strength": "services_rule",
+      "description": "Horizontal service racks should distribute lighting, sprinklers, and power.\n",
+      "distributed_services": [
+        "lighting",
+        "sprinklers",
+        "power"
+      ]
+    },
+    {
+      "id": "RULE_SHARED_KITCHEN_BATHROOM_WET_SERVICES",
+      "name": "Kitchen and bathroom should share wet services",
+      "applies_to": "dwelling_layout",
+      "severity": "warning",
+      "rule_strength": "layout_services_rule",
+      "description": "Kitchen and bathroom wet services should be co-located or closely coordinated to allow shared sewer and hot/cold water supply routes.\n",
+      "services": [
+        "sewer",
+        "hot_water",
+        "cold_water"
+      ]
+    },
+    {
+      "id": "RULE_REDUCE_RISERS_OVERHEAD_WORK_AND_FIRE_CELL_PENETRATIONS",
+      "name": "Reduce risers overhead work and fire-cell penetrations",
+      "applies_to": "dwelling_layout",
+      "severity": "warning",
+      "rule_strength": "constructability_rule",
+      "description": "Service layouts should minimise riser count, overhead service work, and fire-cell penetrations.\n",
+      "metrics": [
+        "riser_count",
+        "overhead_service_length",
+        "fire_cell_penetration_count"
+      ]
+    },
+    {
+      "id": "RULE_HSR_BRACKETS_AT_600_CENTRES",
+      "name": "Horizontal service rack brackets at 600 mm centres",
+      "applies_to": "horizontal_service_rack",
+      "severity": "error",
+      "rule_strength": "hard_rule",
+      "description": "Framed brackets for the horizontal service rack shall be preassembled and mounted at every 600 mm to the slab and wall.\n",
+      "bracket_spacing_mm": 600,
+      "check": {
+        "type": "spacing_equals",
+        "field": "bracket_spacing_mm",
+        "value_mm": 600
+      }
+    },
+    {
+      "id": "RULE_HSR_DEMOUNTABLE_FINISH_PANEL",
+      "name": "Horizontal service rack requires demountable finish panel",
+      "applies_to": "horizontal_service_rack",
+      "severity": "warning",
+      "rule_strength": "maintenance_rule",
+      "description": "Horizontal service racks should use demountable interior finish panels to support access, serviceability, and installation.\n",
+      "required_component": [
+        "demountable_interior_finish_panel"
+      ]
+    },
+    {
+      "id": "RULE_ESM_MODULAR_CHASSIS",
+      "name": "External Services Module shall use modular chassis",
+      "applies_to": "external_services_module",
+      "severity": "warning",
+      "rule_strength": "handling_maintenance_rule",
+      "description": "The External Services Module should use a modular chassis that can be lifted as a single assembly or broken down into two cabinets for removal without crane via elevator.\n",
+      "handling_modes": [
+        "single_assembly_lift",
+        "two_cabinet_breakdown"
+      ],
+      "removal_without_crane": true,
+      "requires_elevator_removal_check": true
+    },
+    {
+      "id": "RULE_ESM_PRETERMINATED_WIRING",
+      "name": "External Services Module includes pre-terminated wiring",
+      "applies_to": "external_services_module",
+      "severity": "warning",
+      "rule_strength": "services_prefabrication_rule",
+      "description": "The External Services Module should include pre-terminated wiring loom provision for power and lighting, transported within the ESM.\n",
+      "required_services": [
+        "power",
+        "lighting"
+      ]
+    },
+    {
+      "id": "RULE_SYSTEM_OPEN_CURATED",
+      "name": "System shall operate as an open curated system",
+      "applies_to": "system",
+      "severity": "principle",
+      "rule_strength": "design_principle",
+      "description": "System 600 should avoid proprietary lock-in while allowing third-party components and suppliers to participate through shared rules, principles, requirements, and a licensing framework.\n",
+      "source": {
+        "document": "DigiComm25-Daryl-Patterson.pdf",
+        "basis": "Open curated system; avoids proprietary lock-in; integration managed by rules and principles."
+      }
+    },
+    {
+      "id": "RULE_INTEGRATION_MANAGED_BY_SYSTEM_RULES",
+      "name": "Component integration shall be governed by system rules",
+      "applies_to": "component",
+      "severity": "error",
+      "rule_strength": "hard_rule",
+      "description": "Components shall only be integrated into System 600 where they satisfy relevant system principles, design rules, component requirements, and schema.\n",
+      "check": {
+        "type": "requires_system_validation"
+      }
+    },
+    {
+      "id": "RULE_MINIMUM_STANDARDISATION_TARGET",
+      "name": "Target at least 80 percent standardisation",
+      "applies_to": "project_instance",
+      "severity": "warning",
+      "rule_strength": "soft_rule",
+      "description": "System configurations should minimise unique parts and maximise use of limited SKUs, with a target of at least 80 percent standardisation.\n",
+      "target_standardisation_percent": 80,
+      "check": {
+        "type": "standardisation_ratio",
+        "minimum_percent": 80
+      }
+    },
+    {
+      "id": "RULE_FIXED_FLEXIBLE_FREE_CLASSIFICATION",
+      "name": "Components require fixed flexible free classification",
+      "applies_to": "component",
+      "severity": "error",
+      "rule_strength": "hard_rule",
+      "description": "Each component shall be classified as fixed, flexible, or free to indicate where design freedom is permitted and where standardisation must be preserved.\n",
+      "required_field": "flexibility_class",
+      "allowed_values": [
+        "fixed",
+        "flexible",
+        "free"
+      ],
+      "check": {
+        "type": "required_field_enum",
+        "field": "flexibility_class",
+        "allowed_values": [
+          "fixed",
+          "flexible",
+          "free"
+        ]
+      }
+    },
+    {
+      "id": "RULE_COMPONENT_REQUIRES_SUBSYSTEM",
+      "name": "Components require subsystem classification",
+      "applies_to": "component",
+      "severity": "error",
+      "rule_strength": "hard_rule",
+      "description": "Every component shall be assigned to a System 600 subsystem.\n",
+      "required_field": "subsystem",
+      "allowed_values": [
+        "structure",
+        "services",
+        "interior",
+        "exterior",
+        "performance_layer",
+        "architectural_layer"
+      ],
+      "check": {
+        "type": "required_field_enum",
+        "field": "subsystem",
+        "allowed_values": [
+          "structure",
+          "services",
+          "interior",
+          "exterior",
+          "performance_layer",
+          "architectural_layer"
+        ]
+      }
+    },
+    {
+      "id": "RULE_SMART_INTERFACES",
+      "name": "Interfaces shall support interchangeability installation and disassembly",
+      "applies_to": "interface",
+      "severity": "warning",
+      "rule_strength": "design_principle",
+      "description": "Component interfaces should be designed for interchangeability, simplified installation, and disassembly.\n",
+      "required_properties": [
+        "interchangeable",
+        "installable",
+        "demountable"
+      ]
+    },
+    {
+      "id": "RULE_COMPONENT_DATA_AT_APPROPRIATE_FIDELITY",
+      "name": "Component data shall support appropriate fidelity levels",
+      "applies_to": "component",
+      "severity": "warning",
+      "rule_strength": "digital_platform_rule",
+      "description": "Component data should be available at appropriate fidelity levels for design, procurement, logistics, fabrication, and installation.\n",
+      "fidelity_levels": [
+        "concept",
+        "coordination",
+        "procurement",
+        "fabrication",
+        "installation"
+      ]
     }
   ],
   "evidence": [
     {
-      "id": "RULE_INTERFACE_COMPATIBILITY",
-      "name": "Module must only reference defined compatible interfaces",
-      "applies_to": "module",
-      "severity": "error",
-      "check": {
-        "type": "interface_reference_exists",
-        "field": "allowed_interfaces",
-        "source": "interfaces"
-      }
+      "id": "PROTO_WALL_FLOOR_001",
+      "title": "Wall-to-floor interface prototype",
+      "scale": 61,
+      "date": "2026-06-03",
+      "tested_items": [
+        "IF_WALL_TO_FLOOR_001",
+        "PART_SLOTTED_BASE_BRACKET_001",
+        "RULE_LIFTING_CAPACITY"
+      ],
+      "purpose": [
+        "test wall-to-floor connection accessibility",
+        "test tolerance strategy",
+        "test lifting point position and accessibility"
+      ],
+      "findings": [
+        {
+          "id": "FINDING_001",
+          "description": "Slotted bracket provides adequate lateral tolerance under mock installation conditions.",
+          "severity": "medium",
+          "implication": "Retain slotted connection strategy but verify with structural engineer."
+        },
+        {
+          "id": "FINDING_002",
+          "description": "Bolt access may become restricted after internal lining is installed.",
+          "severity": "high",
+          "implication": "Revise assembly sequence or bracket access geometry."
+        }
+      ],
+      "outcome": {
+        "status": "revise",
+        "resulting_issues": [
+          "ISSUE_WF_001"
+        ]
+      },
+      "linked_system_items": [
+        "IF_WALL_TO_FLOOR_001",
+        "WALL_2400_2700_EXT_A"
+      ]
     }
   ]
 }

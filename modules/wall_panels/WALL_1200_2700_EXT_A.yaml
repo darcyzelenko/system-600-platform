@@ -3,6 +3,10 @@ name: External wall panel 1200 x 2700 Type A
 type: wall_panel
 category: external_wall
 
+subsystem: structure
+flexibility_class: fixed
+component_format: panelised_component
+
 dimensions_mm:
   width: 1200
   height: 2700
@@ -61,6 +65,11 @@ validation_rules:
   - RULE_GRID_WIDTH
   - RULE_LIFTING_CAPACITY
   - RULE_INTERFACE_COMPATIBILITY
+  - RULE_PRIMARY_GRID_600
+  - RULE_WALL_STANDARD_WIDTHS
+  - RULE_COMPONENT_REQUIRES_SUBSYSTEM
+  - RULE_FIXED_FLEXIBLE_FREE_CLASSIFICATION
+  - RULE_WALL_FINISH_DECOUPLED_FROM_FRAME
 
 status:
   maturity: concept_prototype

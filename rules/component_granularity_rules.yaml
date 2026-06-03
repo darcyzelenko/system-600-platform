@@ -1,0 +1,90 @@
+rules:
+  - id: RULE_PRIMARY_GRID_600
+    name: Components shall coordinate with the 600 mm system grid
+    applies_to: module
+    severity: error
+    rule_strength: hard_rule
+    description: >
+      Primary component dimensions shall coordinate with the 600 mm System 600 grid.
+    primary_grid_mm: 600
+    check:
+      type: grid_increment
+      field: dimensions_mm.width
+      increment_mm: 600
+
+  - id: RULE_WALL_STANDARD_WIDTHS
+    name: Wall panels shall use standard System 600 widths
+    applies_to: wall_panel
+    severity: error
+    rule_strength: hard_rule
+    description: >
+      Wall panels shall use the standard System 600 wall widths identified in the
+      component concepts.
+    permitted_widths_mm:
+      - 1200
+      - 1800
+      - 2400
+      - 3000
+      - 3600
+      - 6000
+    check:
+      type: permitted_width
+      field: dimensions_mm.width
+      permitted_values:
+        - 1200
+        - 1800
+        - 2400
+        - 3000
+        - 3600
+        - 6000
+
+  - id: RULE_STANDARDISED_EXTERIOR_BAY_SIZES
+    name: Exterior bay assemblies should use standardised dimensions
+    applies_to: facade_panel
+    severity: warning
+    rule_strength: inferred_rule
+    description: >
+      Exterior facade and window assemblies should use standardised bay dimensions
+      derived from the System 600 standardised size diagrams.
+    permitted_widths_mm:
+      - 600
+      - 1200
+      - 2400
+    permitted_heights_mm:
+      - 1200
+      - 1400
+      - 2200
+
+  - id: RULE_FOCUS_ON_ELEMENT_AND_SUBSYSTEM_GRANULARITY
+    name: System should prioritise repeatable element and subsystem granularity
+    applies_to: system
+    severity: principle
+    rule_strength: design_principle
+    description: >
+      System 600 should prioritise repeatable components around element,
+      sub-element, and selected subsystem scale, rather than relying primarily
+      on whole-building or whole-dwelling volumetric modules.
+    preferred_granularity:
+      - element
+      - sub_element
+      - subsystem
+    avoid_as_default:
+      - whole_building
+      - whole_dwelling
+
+  - id: RULE_2D_COMPONENTS_PREFERRED
+    name: Flat and panelised components preferred over full volumetric modules
+    applies_to: module
+    severity: principle
+    rule_strength: design_principle
+    description: >
+      System 600 should prioritise flat and panelised components over full
+      volumetric modularisation, except where pods or service modules provide
+      strategic system value.
+    preferred_component_format:
+      - flat_component
+      - panelised_component
+    exceptions:
+      - bathroom_pod
+      - laundry_pod
+      - external_services_module

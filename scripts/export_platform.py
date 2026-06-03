@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import date, datetime
 import json
 import yaml
 
@@ -10,6 +11,19 @@ EXPORTS = ROOT / "exports"
 def load_yaml(path: Path):
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
+
+
+def make_json_safe(value):
+    if isinstance(value, (date, datetime)):
+        return value.isoformat()
+
+    if isinstance(value, dict):
+        return {key: make_json_safe(item) for key, item in value.items()}
+
+    if isinstance(value, list):
+        return [make_json_safe(item) for item in value]
+
+    return value
 
 
 def load_yaml_folder(folder: Path):
@@ -49,6 +63,8 @@ def main():
         "rules": rules,
         "evidence": evidence,
     }
+
+    package = make_json_safe(package)
 
     export_path = EXPORTS / "system_600_platform.json"
 

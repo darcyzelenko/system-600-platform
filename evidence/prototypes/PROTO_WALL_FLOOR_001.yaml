@@ -1,9 +1,34 @@
-rules:
-  - id: RULE_INTERFACE_COMPATIBILITY
-    name: Module must only reference defined compatible interfaces
-    applies_to: module
-    severity: error
-    check:
-      type: interface_reference_exists
-      field: allowed_interfaces
-      source: interfaces
+id: PROTO_WALL_FLOOR_001
+title: Wall-to-floor interface prototype
+scale: 1:1
+date: 2026-06-03
+
+tested_items:
+  - IF_WALL_TO_FLOOR_001
+  - PART_SLOTTED_BASE_BRACKET_001
+  - RULE_LIFTING_CAPACITY
+
+purpose:
+  - test wall-to-floor connection accessibility
+  - test tolerance strategy
+  - test lifting point position and accessibility
+
+findings:
+  - id: FINDING_001
+    description: Slotted bracket provides adequate lateral tolerance under mock installation conditions.
+    severity: medium
+    implication: Retain slotted connection strategy but verify with structural engineer.
+
+  - id: FINDING_002
+    description: Bolt access may become restricted after internal lining is installed.
+    severity: high
+    implication: Revise assembly sequence or bracket access geometry.
+
+outcome:
+  status: revise
+  resulting_issues:
+    - ISSUE_WF_001
+
+linked_system_items:
+  - IF_WALL_TO_FLOOR_001
+  - WALL_2400_2700_EXT_A
