@@ -1,0 +1,9 @@
+rules:
+  - id: RULE_GRID_WIDTH
+    name: Module width must use permitted System 600 width
+    applies_to: module
+    severity: error
+    check:
+      type: permitted_width
+      field: dimensions_mm.width
+      source: system.module_sizes.permitted_widths_mm

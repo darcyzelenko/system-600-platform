@@ -1,0 +1,38 @@
+interfaces:
+  - id: IF_WALL_TO_FLOOR_001
+    name: Wall panel to floor cassette interface
+    type: wall_to_floor
+
+    from_module_type: wall_panel
+    to_module_type: floor_cassette
+
+    required_ports:
+      from: base
+      to: support_zone
+
+    connection_methods:
+      - PART_SLOTTED_BASE_BRACKET_001
+
+    geometric_rules:
+      requires_grid_alignment: true
+      max_offset_from_grid_mm: 10
+      minimum_edge_distance_mm: 50
+
+    tolerance_strategy:
+      type: slotted_connection
+      adjustment_x_mm: 15
+      adjustment_y_mm: 5
+      adjustment_z_mm: 10
+
+    inspection_points:
+      - base_bracket_installed
+      - bolt_torque_checked
+      - packing_verified
+      - fire_seal_completed
+
+    status:
+      maturity: prototype_tested
+      design_freeze: false
+
+    evidence:
+      - PROTO_WALL_FLOOR_001

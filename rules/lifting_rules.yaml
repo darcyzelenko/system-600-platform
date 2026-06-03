@@ -1,0 +1,10 @@
+rules:
+  - id: RULE_LIFTING_CAPACITY
+    name: Combined lifting point capacity must exceed module mass with safety factor
+    applies_to: module
+    severity: error
+    check:
+      type: lifting_capacity
+      mass_field: mass_kg
+      lifting_points_field: lifting_points
+      safety_factor_source: system.handling.lifting_safety_factor

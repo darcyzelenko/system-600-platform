@@ -1,0 +1,11 @@
+parts:
+  - id: PART_LIFTING_INSERT_M16_001
+    name: M16 lifting insert
+    type: lifting_insert
+    material: galvanised_steel
+    load_rating_kg: 750
+    compatible_lifting_methods:
+      - two_point_lift_with_spreader_bar
+    inspection_required: true
+    status:
+      maturity: provisional

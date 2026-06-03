@@ -1,0 +1,42 @@
+system:
+  id: SYSTEM_600
+  name: System 600
+  version: 0.1.0
+  description: >
+    A 600 mm grid-based building system for industrialised housing delivery.
+
+grid:
+  primary_increment_mm: 600
+  secondary_increment_mm: 300
+
+module_sizes:
+  permitted_widths_mm:
+    - 600
+    - 1200
+    - 1800
+    - 2400
+    - 3000
+    - 3600
+    - 4200
+    - 4800
+    - 5400
+    - 6000
+
+  preferred_widths_mm:
+    - 1200
+    - 2400
+    - 3600
+
+tolerances:
+  manufacturing_mm: 2
+  site_installation_mm: 5
+  interface_allowance_mm: 10
+
+handling:
+  preferred_max_panel_mass_kg: 500
+  absolute_max_panel_mass_kg: 1500
+  lifting_safety_factor: 2.5
+
+status:
+  maturity: concept
+  design_freeze: false

@@ -1,0 +1,9 @@
+rules:
+  - id: RULE_INTERFACE_COMPATIBILITY
+    name: Module must only reference defined compatible interfaces
+    applies_to: module
+    severity: error
+    check:
+      type: interface_reference_exists
+      field: allowed_interfaces
+      source: interfaces
