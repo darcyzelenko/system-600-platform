@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>System 600 Platform Visualiser</title>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --line: #d8dde6;
+      --text: #172033;
+      --muted: #6b7280;
+      --blue: #2563eb;
+      --green: #059669;
+      --orange: #d97706;
+      --purple: #7c3aed;
+      --red: #dc2626;
+      --grey: #64748b;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    header {
+      height: 64px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    header h1 {
+      font-size: 20px;
+      margin: 0;
+      font-weight: 700;
+    }
+
+    header .subtitle {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    #layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      height: calc(100vh - 64px);
+    }
+
+    #graph-container {
+      position: relative;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+    }
+
+    #side-panel {
+      border-left: 1px solid var(--line);
+      background: var(--panel);
+      padding: 18px;
+      overflow-y: auto;
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .panel-type {
+      display: inline-block;
+      font-size: 12px;
+      color: white;
+      border-radius: 999px;
+      padding: 4px 9px;
+      margin-bottom: 16px;
+      background: var(--grey);
+    }
+
+    .field {
+      border-top: 1px solid var(--line);
+      padding: 10px 0;
+    }
+
+    .field-key {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .field-value {
+      font-size: 13px;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .link {
+      stroke: #aab4c3;
+      stroke-opacity: 0.75;
+      stroke-width: 1.2px;
+    }
+
+    .link-label {
+      font-size: 10px;
+      fill: #64748b;
+      pointer-events: none;
+    }
+
+    .node circle {
+      stroke: white;
+      stroke-width: 2px;
+    }
+
+    .node text {
+      font-size: 11px;
+      fill: #1f2937;
+      pointer-events: none;
+      paint-order: stroke;
+      stroke: white;
+      stroke-width: 3px;
+      stroke-linecap: butt;
+      stroke-linejoin: miter;
+    }
+
+    .legend {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(255,255,255,0.94);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12px;
+      box-shadow: 0 8px 20px rgba(15,23,42,0.08);
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 5px 0;
+      color: #334155;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .toolbar {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(255,255,255,0.94);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 8px 20px rgba(15,23,42,0.08);
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 7px;
+      padding: 7px 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    button:hover {
+      background: #f1f5f9;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .error {
+      color: var(--red);
+      font-weight: 700;
+      padding: 16px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>System 600 Platform Visualiser</h1>
+      <div class="subtitle">Graph view of modules, parts, interfaces, rules, and evidence</div>
+    </div>
+    <div class="subtitle" id="system-version">Loading platform data...</div>
+  </header>
+
+  <div id="layout">
+    <div id="graph-container">
+      <div class="legend">
+        <strong>Node types</strong>
+        <div class="legend-row"><span class="dot" style="background:#2563eb"></span>System</div>
+        <div class="legend-row"><span class="dot" style="background:#0f172a"></span>Collection group</div>
+        <div class="legend-row"><span class="dot" style="background:#334155"></span>Family</div>
+        <div class="legend-row"><span class="dot" style="background:#059669"></span>Module</div>
+        <div class="legend-row"><span class="dot" style="background:#d97706"></span>Part</div>
+        <div class="legend-row"><span class="dot" style="background:#7c3aed"></span>Interface</div>
+        <div class="legend-row"><span class="dot" style="background:#ef4444"></span>Rule</div>
+        <div class="legend-row"><span class="dot" style="background:#64748b"></span>Evidence</div>
+      </div>
+
+      <div class="toolbar">
+        <button onclick="resetZoom()">Reset zoom</button>
+      </div>
+
+      <svg id="graph"></svg>
+    </div>
+
+    <aside id="side-panel">
+      <div class="empty">
+        Click a node to inspect its data.
+        <br><br>
+        This visualiser reads the validated JSON export from:
+        <br>
+        <code>exports/system_600_platform.json</code>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const DATA_PATH = "./exports/system_600_platform.json";
+
+    const typeColours = {
+        system: "#2563eb",
+        group: "#0f172a",
+        family: "#334155",
+        module: "#059669",
+        part: "#d97706",
+        interface: "#7c3aed",
+        rule: "#ef4444",
+        evidence: "#64748b"
+    };
+
+    const svg = d3.select("#graph");
+    const container = svg.append("g");
+
+    const zoom = d3.zoom()
+      .scaleExtent([0.2, 4])
+      .on("zoom", (event) => {
+        container.attr("transform", event.transform);
+      });
+
+    svg.call(zoom);
+
+    function resetZoom() {
+      svg.transition()
+        .duration(300)
+        .call(zoom.transform, d3.zoomIdentity);
+    }
+
+    function getSvgSize() {
+      const rect = document.getElementById("graph").getBoundingClientRect();
+      return { width: rect.width, height: rect.height };
+    }
+
+    function addNode(nodes, id, type, label, data) {
+      if (!id) return;
+      if (nodes.some(n => n.id === id)) return;
+
+      nodes.push({
+        id,
+        type,
+        label: label || id,
+        data
+      });
+    }
+
+    function addLink(links, source, target, label) {
+      if (!source || !target) return;
+
+      links.push({
+        source,
+        target,
+        label
+      });
+    }
+
+    function buildGraph(platformPackage) {
+        const nodes = [];
+        const links = [];
+
+        const system = platformPackage.platform?.system || {};
+        const systemId = system.id || "SYSTEM_600";
+
+        addNode(nodes, systemId, "system", system.name || systemId, platformPackage.platform);
+
+        const modules = platformPackage.modules || [];
+        const parts = platformPackage.parts || [];
+        const interfaces = platformPackage.interfaces || [];
+        const rules = platformPackage.rules || [];
+        const evidence = platformPackage.evidence || [];
+
+        const collections = [
+            { id: "GROUP_MODULES", type: "group", label: "Modules", key: "modules" },
+            { id: "GROUP_PARTS", type: "group", label: "Parts", key: "parts" },
+            { id: "GROUP_INTERFACES", type: "group", label: "Interfaces", key: "interfaces" },
+            { id: "GROUP_RULES", type: "group", label: "Rules", key: "rules" },
+            { id: "GROUP_EVIDENCE", type: "group", label: "Evidence", key: "evidence" }
+        ];
+
+        collections.forEach(group => {
+            addNode(nodes, group.id, "group", group.label, group);
+            addLink(links, systemId, group.id, "contains");
+        });
+
+        function ensureFamilyNode(collectionGroupId, collectionKey, familyName) {
+            const safeFamily = familyName || "general";
+            const familyId = `FAMILY_${collectionKey.toUpperCase()}_${safeFamily.toUpperCase().replaceAll(" ", "_")}`;
+
+            addNode(
+            nodes,
+            familyId,
+            "family",
+            safeFamily.replaceAll("_", " "),
+            {
+                id: familyId,
+                name: safeFamily,
+                collection: collectionKey,
+                family: safeFamily
+            }
+            );
+
+            addLink(links, collectionGroupId, familyId, "family");
+            return familyId;
+        }
+
+        // Modules
+        modules.forEach(module => {
+            const family = module._meta?.family || module.category || module.type || "general";
+            const familyId = ensureFamilyNode("GROUP_MODULES", "modules", family);
+
+            addNode(nodes, module.id, "module", module.id, module);
+            addLink(links, familyId, module.id, "contains");
+
+            (module.parts || []).forEach(partId => {
+            addLink(links, module.id, partId, "uses part");
+            });
+
+            (module.allowed_interfaces || []).forEach(interfaceId => {
+            addLink(links, module.id, interfaceId, "allowed interface");
+            });
+
+            (module.validation_rules || []).forEach(ruleId => {
+            addLink(links, module.id, ruleId, "checked by");
+            });
+
+            (module.evidence || []).forEach(evidenceId => {
+            addLink(links, module.id, evidenceId, "supported by");
+            });
+        });
+
+        // Parts
+        parts.forEach(part => {
+            const family = part._meta?.family || part.type || "general";
+            const familyId = ensureFamilyNode("GROUP_PARTS", "parts", family);
+
+            addNode(nodes, part.id, "part", part.id, part);
+            addLink(links, familyId, part.id, "contains");
+
+            (part.compatible_interfaces || []).forEach(interfaceId => {
+            addLink(links, part.id, interfaceId, "compatible with");
+            });
+        });
+
+        // Interfaces
+        interfaces.forEach(intf => {
+            const family = intf._meta?.family || intf.type || "general";
+            const familyId = ensureFamilyNode("GROUP_INTERFACES", "interfaces", family);
+
+            addNode(nodes, intf.id, "interface", intf.id, intf);
+            addLink(links, familyId, intf.id, "contains");
+
+            (intf.connection_methods || []).forEach(partId => {
+            addLink(links, intf.id, partId, "connection method");
+            });
+
+            (intf.evidence || []).forEach(evidenceId => {
+            addLink(links, intf.id, evidenceId, "supported by");
+            });
+        });
+
+        // Rules
+        rules.forEach(rule => {
+            const family = rule._meta?.family || rule.rule_strength || "general";
+            const familyId = ensureFamilyNode("GROUP_RULES", "rules", family);
+
+            addNode(nodes, rule.id, "rule", rule.id, rule);
+            addLink(links, familyId, rule.id, "contains");
+        });
+
+        // Evidence
+        evidence.forEach(item => {
+            const family = item._meta?.family || "general";
+            const familyId = ensureFamilyNode("GROUP_EVIDENCE", "evidence", family);
+
+            addNode(nodes, item.id, "evidence", item.id, item);
+            addLink(links, familyId, item.id, "contains");
+
+            (item.tested_items || []).forEach(testedId => {
+            addLink(links, item.id, testedId, "tests");
+            });
+
+            (item.linked_system_items || []).forEach(linkedId => {
+            addLink(links, item.id, linkedId, "links to");
+            });
+        });
+
+        const nodeIds = new Set(nodes.map(node => node.id));
+
+        const safeLinks = [];
+        const missingReferences = [];
+
+        links.forEach(link => {
+            const sourceId = typeof link.source === "object" ? link.source.id : link.source;
+            const targetId = typeof link.target === "object" ? link.target.id : link.target;
+
+            if (nodeIds.has(sourceId) && nodeIds.has(targetId)) {
+            safeLinks.push(link);
+            } else {
+            missingReferences.push({
+                source: sourceId,
+                target: targetId,
+                label: link.label
+            });
+            }
+        });
+
+        if (missingReferences.length > 0) {
+            console.warn("Missing graph references:", missingReferences);
+        }
+
+        return { nodes, links: safeLinks, missingReferences };
+        }
+
+    function renderGraph(graph) {
+      const { width, height } = getSvgSize();
+
+      container.selectAll("*").remove();
+
+      const simulation = d3.forceSimulation(graph.nodes)
+        .force("link", d3.forceLink(graph.links)
+            .id(d => d.id)
+            .distance(d => {
+            if (d.label === "contains") return 110;
+            if (d.label === "family") return 140;
+            if (d.label === "uses part") return 90;
+            if (d.label === "checked by") return 100;
+            return 120;
+            })
+            .strength(0.35)
+        )
+        .force("charge", d3.forceManyBody().strength(-700))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("collision", d3.forceCollide().radius(d => {
+            if (d.type === "system") return 80;
+            if (d.type === "group") return 70;
+            if (d.type === "family") return 55;
+            if (d.type === "module") return 45;
+            return 30;
+    }));
+
+      const link = container.append("g")
+        .selectAll("line")
+        .data(graph.links)
+        .join("line")
+        .attr("class", "link");
+
+      const linkLabel = container.append("g")
+        .selectAll("text")
+        .data(graph.links)
+        .join("text")
+        .attr("class", "link-label")
+        .style("display", "none")
+        .text(d => d.label);
+
+      const node = container.append("g")
+        .selectAll("g")
+        .data(graph.nodes)
+        .join("g")
+        .attr("class", "node")
+        .call(drag(simulation))
+        .on("click", (event, d) => {
+            event.stopPropagation();
+            showCard(d);
+            focusOnNode(d, graph, node, link);
+        });
+
+      node.append("circle")
+        .attr("r", d => {
+            if (d.type === "system") return 24;
+            if (d.type === "group") return 20;
+            if (d.type === "family") return 16;
+            if (d.type === "module") return 14;
+            if (d.type === "interface") return 13;
+            if (d.type === "part") return 11;
+            if (d.type === "evidence") return 11;
+            if (d.type === "rule") return 8;
+            return 10;
+        })
+        .attr("fill", d => typeColours[d.type] || "#64748b");
+
+        node.append("text")
+        .attr("x", 18)
+        .attr("y", 4)
+        .style("display", d => {
+            if (d.type === "system") return "block";
+            if (d.type === "group") return "block";
+            if (d.type === "family") return "block";
+            if (d.type === "module") return "block";
+            return "none";
+        })
+        .text(d => d.label);
+
+      simulation.on("tick", () => {
+        link
+          .attr("x1", d => d.source.x)
+          .attr("y1", d => d.source.y)
+          .attr("x2", d => d.target.x)
+          .attr("y2", d => d.target.y);
+
+        linkLabel
+          .attr("x", d => (d.source.x + d.target.x) / 2)
+          .attr("y", d => (d.source.y + d.target.y) / 2);
+
+        node.attr("transform", d => `translate(${d.x},${d.y})`);
+      });
+
+      svg.on("click", () => {
+        node.style("opacity", 1);
+        link.style("opacity", 0.75);
+
+        document.getElementById("side-panel").innerHTML = `
+            <div class="empty">
+            Click a node to inspect its data.
+            <br><br>
+            The graph contains ${graph.nodes.length} nodes and ${graph.links.length} valid relationships.
+            <br><br>
+            ${graph.missingReferences && graph.missingReferences.length > 0
+                ? `Warning: ${graph.missingReferences.length} broken references were filtered out. Check the browser console.`
+                : `No broken references detected.`}
+            </div>
+        `;
+    });
+    }
+
+    function drag(simulation) {
+      function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+      }
+
+      function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+      }
+
+      function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+      }
+
+      return d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended);
+    }
+
+    function showCard(node) {
+      const panel = document.getElementById("side-panel");
+
+      const colour = typeColours[node.type] || "#64748b";
+      const data = node.data || {};
+
+      const description = data.description
+        ? `<div class="field">
+            <div class="field-key">Description</div>
+            <div class="field-value">${escapeHtml(data.description)}</div>
+            </div>`
+        : "";
+
+      const fields = Object.entries(data)
+        .map(([key, value]) => `
+          <div class="field">
+            <div class="field-key">${escapeHtml(key)}</div>
+            <div class="field-value">${escapeHtml(formatValue(value))}</div>
+          </div>
+        `)
+        .join("");
+
+
+        function focusOnNode(selectedNode, graph, nodeSelection, linkSelection) {
+            const connectedIds = new Set();
+            connectedIds.add(selectedNode.id);
+
+            graph.links.forEach(link => {
+                const sourceId = typeof link.source === "object" ? link.source.id : link.source;
+                const targetId = typeof link.target === "object" ? link.target.id : link.target;
+
+                if (sourceId === selectedNode.id) {
+                connectedIds.add(targetId);
+                }
+
+                if (targetId === selectedNode.id) {
+                connectedIds.add(sourceId);
+                }
+            });
+
+            nodeSelection
+                .style("opacity", d => connectedIds.has(d.id) ? 1 : 0.15);
+
+            linkSelection
+                .style("opacity", d => {
+                const sourceId = typeof d.source === "object" ? d.source.id : d.source;
+                const targetId = typeof d.target === "object" ? d.target.id : d.target;
+                return sourceId === selectedNode.id || targetId === selectedNode.id ? 0.9 : 0.08;
+                });
+        }
+
+      panel.innerHTML = `
+        <div class="panel-title">${escapeHtml(node.label)}</div>
+        <div class="panel-type" style="background:${colour}">${escapeHtml(node.type)}</div>
+        ${description}
+        ${fields}
+        `;
+    }
+
+    function formatValue(value) {
+      if (value === null || value === undefined) return "";
+      if (typeof value === "object") return JSON.stringify(value, null, 2);
+      return String(value);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function main() {
+      try {
+        const response = await fetch(DATA_PATH);
+
+        if (!response.ok) {
+          throw new Error(`Could not load ${DATA_PATH}`);
+        }
+
+        const platformPackage = await response.json();
+        const graph = buildGraph(platformPackage);
+
+        const system = platformPackage.platform?.system || {};
+        document.getElementById("system-version").textContent =
+          `${system.name || "System 600"} ${system.version ? "v" + system.version : ""}`;
+
+        renderGraph(graph);
+      } catch (error) {
+        document.getElementById("graph-container").innerHTML = `
+          <div class="error">
+            Failed to load visualiser data.
+            <br><br>
+            ${escapeHtml(error.message)}
+            <br><br>
+            Make sure you have run:
+            <br>
+            <code>python scripts\\export_platform.py</code>
+            <br><br>
+            Then start a local server from the repo root:
+            <br>
+            <code>python -m http.server 8000</code>
+          </div>
+        `;
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>
