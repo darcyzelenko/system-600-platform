@@ -1012,5 +1012,226 @@
         "source_path": "evidence/prototypes/PROTO_WALL_FLOOR_001.yaml"
       }
     }
+  ],
+  "assembly_sequences": [
+    {
+      "id": "ASSEMBLY_WALL_FLOOR_001",
+      "name": "Install external wall panel onto floor support",
+      "type": "assembly_sequence",
+      "description": "Defines the indicative sequence for lifting, positioning, connecting, inspecting, and releasing an external wall panel at a wall-to-floor interface.\n",
+      "status": {
+        "maturity": "concept_prototype",
+        "approval_status": "provisional",
+        "design_freeze": false,
+        "version": "0.1.0"
+      },
+      "applies_to": {
+        "module_types": [
+          "wall_panel"
+        ],
+        "interfaces": [
+          "IF_WALL_TO_FLOOR_001"
+        ]
+      },
+      "inputs": {
+        "modules": [
+          "WALL_1200_2700_EXT_A",
+          "WALL_2400_2700_EXT_A"
+        ],
+        "parts": [
+          "PART_LIFTING_INSERT_M16_001",
+          "PART_SLOTTED_BASE_BRACKET_001"
+        ],
+        "evidence": [
+          "PROTO_WALL_FLOOR_001"
+        ]
+      },
+      "prerequisites": [
+        {
+          "id": "PREREQ_001",
+          "description": "Floor support zone has been inspected and accepted.",
+          "required": true
+        },
+        {
+          "id": "PREREQ_002",
+          "description": "Panel mass and lifting-point capacity have been verified.",
+          "required": true
+        },
+        {
+          "id": "PREREQ_003",
+          "description": "Required connectors, fixings, packers, and temporary supports are available.",
+          "required": true
+        }
+      ],
+      "required_roles": [
+        "installer",
+        "crane_operator",
+        "dogger_or_rigger",
+        "quality_inspector"
+      ],
+      "required_equipment": [
+        "crane",
+        "approved_lifting_rig",
+        "spreader_bar",
+        "temporary_bracing",
+        "alignment_tools",
+        "torque_tool"
+      ],
+      "steps": [
+        {
+          "sequence": 10,
+          "id": "STEP_INSPECT_SUPPORT_ZONE",
+          "action": "Inspect floor support zone",
+          "description": "Confirm support-zone geometry, cleanliness, access, and readiness before the wall panel is lifted.\n",
+          "responsible_role": "quality_inspector",
+          "hold_point": true,
+          "required_checks": [
+            "support_zone_clear",
+            "support_zone_dimensions_verified",
+            "interface_location_verified"
+          ]
+        },
+        {
+          "sequence": 20,
+          "id": "STEP_INSPECT_PANEL",
+          "action": "Inspect wall panel before lift",
+          "description": "Verify panel identity, condition, mass, lifting points, and required parts.\n",
+          "responsible_role": "installer",
+          "hold_point": true,
+          "required_checks": [
+            "correct_module_confirmed",
+            "panel_damage_check_complete",
+            "lifting_points_accessible",
+            "lifting_capacity_verified"
+          ]
+        },
+        {
+          "sequence": 30,
+          "id": "STEP_ATTACH_LIFTING_RIG",
+          "action": "Attach approved lifting rig",
+          "responsible_role": "dogger_or_rigger",
+          "hold_point": false,
+          "required_checks": [
+            "lifting_rig_connected",
+            "lifting_connections_locked",
+            "exclusion_zone_established"
+          ]
+        },
+        {
+          "sequence": 40,
+          "id": "STEP_LIFT_PANEL",
+          "action": "Lift panel into installation position",
+          "responsible_role": "crane_operator",
+          "hold_point": false,
+          "required_checks": [
+            "panel_stable_during_lift",
+            "panel_orientation_correct"
+          ]
+        },
+        {
+          "sequence": 50,
+          "id": "STEP_POSITION_PANEL",
+          "action": "Position and align panel",
+          "responsible_role": "installer",
+          "hold_point": false,
+          "required_checks": [
+            "panel_on_required_grid",
+            "interface_offset_within_tolerance",
+            "bearing_and_support_verified"
+          ]
+        },
+        {
+          "sequence": 60,
+          "id": "STEP_INSTALL_CONNECTIONS",
+          "action": "Install wall-to-floor connections",
+          "responsible_role": "installer",
+          "hold_point": false,
+          "required_checks": [
+            "required_brackets_installed",
+            "required_fixings_installed",
+            "packing_verified"
+          ]
+        },
+        {
+          "sequence": 70,
+          "id": "STEP_INSTALL_TEMPORARY_BRACING",
+          "action": "Install and verify temporary bracing",
+          "responsible_role": "installer",
+          "hold_point": true,
+          "required_checks": [
+            "temporary_bracing_installed",
+            "panel_plumb_verified",
+            "panel_stability_verified"
+          ]
+        },
+        {
+          "sequence": 80,
+          "id": "STEP_FINAL_CONNECTION_INSPECTION",
+          "action": "Inspect completed connection",
+          "responsible_role": "quality_inspector",
+          "hold_point": true,
+          "required_checks": [
+            "alignment_verified",
+            "bolt_torque_checked",
+            "packing_verified",
+            "connection_access_confirmed"
+          ]
+        },
+        {
+          "sequence": 90,
+          "id": "STEP_RELEASE_LIFTING_RIG",
+          "action": "Release lifting rig",
+          "responsible_role": "dogger_or_rigger",
+          "hold_point": false,
+          "required_checks": [
+            "panel_stable_before_release",
+            "temporary_bracing_accepted"
+          ]
+        },
+        {
+          "sequence": 100,
+          "id": "STEP_COMPLETE_INTERFACE_WORKS",
+          "action": "Complete remaining interface works",
+          "responsible_role": "installer",
+          "hold_point": true,
+          "required_checks": [
+            "fire_seal_completed",
+            "inspection_record_completed",
+            "unresolved_issues_recorded"
+          ]
+        }
+      ],
+      "outputs": [
+        "connected_wall_panel",
+        "completed_inspection_record",
+        "unresolved_issue_record_if_required"
+      ],
+      "known_risks": [
+        {
+          "id": "RISK_001",
+          "description": "Bolt access may be restricted after internal lining installation.",
+          "mitigation": "Complete and inspect connection before lining closes access."
+        },
+        {
+          "id": "RISK_002",
+          "description": "Panel may be unstable before temporary bracing is installed.",
+          "mitigation": "Do not release lifting rig until temporary bracing is accepted."
+        }
+      ],
+      "validation_rules": [
+        "RULE_LIFTING_CAPACITY",
+        "RULE_INTERFACE_COMPATIBILITY",
+        "RULE_PRIMARY_GRID_600"
+      ],
+      "evidence": [
+        "PROTO_WALL_FLOOR_001"
+      ],
+      "_meta": {
+        "collection": "modules",
+        "family": "assembly_sequences",
+        "source_file": "ASSEMBLY_WALL_FLOOR_001.yaml",
+        "source_path": "processes/assembly_sequences/ASSEMBLY_WALL_FLOOR_001.yaml"
+      }
+    }
   ]
 }

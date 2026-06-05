@@ -113,6 +113,7 @@ def main():
         "interfaces": load_wrapped_list(ROOT / "interfaces", "interfaces", "interfaces"),
         "rules": load_wrapped_list(ROOT / "rules", "rules", "rules"),
         "evidence": load_evidence(ROOT / "evidence"),
+        "assembly_sequences": load_modules(ROOT / "processes" / "assembly_sequences"),
     }
 
     package = make_json_safe(package)
@@ -128,6 +129,7 @@ def main():
     print(f"Interfaces: {len(package['interfaces'])}")
     print(f"Rules: {len(package['rules'])}")
     print(f"Evidence: {len(package['evidence'])}")
+    print(f"Assembly sequences: {len(package['assembly_sequences'])}")
 
 
 if __name__ == "__main__":
