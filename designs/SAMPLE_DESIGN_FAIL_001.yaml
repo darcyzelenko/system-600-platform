@@ -1,0 +1,37 @@
+﻿id: SAMPLE_DESIGN_FAIL_001
+name: Sample failing wall floor design
+description: >
+  Minimal design fixture containing one deliberately non-compliant wall panel
+  placement. The wall instance is offset from the 600 mm grid and should fail
+  design-level geometric checking once check_design.py is implemented.
+
+instances:
+  - instance_id: WALL_A
+    type_id: WALL_2400_2700_EXT_A
+    x_mm: 37
+    y_mm: 0
+    z_mm: 0
+    rotation_deg: 0
+
+  - instance_id: FLOOR_A
+    type_id: FLOOR_2400_6000_STRUCT_A
+    x_mm: 0
+    y_mm: 0
+    z_mm: 0
+    rotation_deg: 0
+
+connections:
+  - connection_id: CONN_WALL_A_TO_FLOOR_A
+    wall_instance: WALL_A
+    floor_instance: FLOOR_A
+    interface: IF_WALL_TO_FLOOR_001
+
+    connection_point_mm:
+      x: 600
+      y: 600
+      z: 0
+
+    declared_offset_mm:
+      x: 0
+      y: 0
+      z: 0

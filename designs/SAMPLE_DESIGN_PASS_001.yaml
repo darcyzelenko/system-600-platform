@@ -1,0 +1,37 @@
+﻿id: SAMPLE_DESIGN_PASS_001
+name: Sample passing wall floor design
+description: >
+  Minimal design fixture containing one wall panel instance, one floor cassette
+  instance, and one declared wall-to-floor connection expected to pass static
+  compatibility checks and basic grid-alignment checks.
+
+instances:
+  - instance_id: WALL_A
+    type_id: WALL_2400_2700_EXT_A
+    x_mm: 0
+    y_mm: 0
+    z_mm: 0
+    rotation_deg: 0
+
+  - instance_id: FLOOR_A
+    type_id: FLOOR_2400_6000_STRUCT_A
+    x_mm: 0
+    y_mm: 0
+    z_mm: 0
+    rotation_deg: 0
+
+connections:
+  - connection_id: CONN_WALL_A_TO_FLOOR_A
+    wall_instance: WALL_A
+    floor_instance: FLOOR_A
+    interface: IF_WALL_TO_FLOOR_001
+
+    connection_point_mm:
+      x: 600
+      y: 600
+      z: 0
+
+    declared_offset_mm:
+      x: 0
+      y: 0
+      z: 0
