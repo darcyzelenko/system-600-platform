@@ -46,6 +46,228 @@
   },
   "modules": [
     {
+      "id": "FLOOR_1200_2400_STRUCT_A",
+      "name": "Structural floor cassette 1200 x 2400 Type A",
+      "type": "floor_cassette",
+      "category": "structural_floor",
+      "subsystem": "structure",
+      "flexibility_class": "fixed",
+      "component_format": "cassette_component",
+      "dimensions_mm": {
+        "width": 1200,
+        "length": 2400,
+        "depth": 300
+      },
+      "mass_kg": 280,
+      "grid": {
+        "width_increment_mm": 600,
+        "length_increment_mm": 600,
+        "grid_aligned": true
+      },
+      "performance": {
+        "structural_role": "spanning_floor",
+        "fire_rating": "TBC",
+        "acoustic_rating": "TBC",
+        "vibration_performance": "TBC"
+      },
+      "parts": [
+        "PART_LIFTING_INSERT_M16_001"
+      ],
+      "ports": [
+        {
+          "id": "support_zone",
+          "type": "wall_support_zone",
+          "location": "top_face"
+        },
+        {
+          "id": "left_edge",
+          "type": "floor_edge_connection",
+          "location": "left_edge"
+        },
+        {
+          "id": "right_edge",
+          "type": "floor_edge_connection",
+          "location": "right_edge"
+        },
+        {
+          "id": "front_edge",
+          "type": "floor_edge_connection",
+          "location": "front_edge"
+        },
+        {
+          "id": "rear_edge",
+          "type": "floor_edge_connection",
+          "location": "rear_edge"
+        }
+      ],
+      "lifting_points": [
+        {
+          "id": "LP_01",
+          "x_mm": 300,
+          "y_mm": 600,
+          "z_mm": 300,
+          "load_rating_kg": 750
+        },
+        {
+          "id": "LP_02",
+          "x_mm": 900,
+          "y_mm": 600,
+          "z_mm": 300,
+          "load_rating_kg": 750
+        },
+        {
+          "id": "LP_03",
+          "x_mm": 300,
+          "y_mm": 1800,
+          "z_mm": 300,
+          "load_rating_kg": 750
+        },
+        {
+          "id": "LP_04",
+          "x_mm": 900,
+          "y_mm": 1800,
+          "z_mm": 300,
+          "load_rating_kg": 750
+        }
+      ],
+      "allowed_interfaces": [
+        "IF_WALL_TO_FLOOR_001"
+      ],
+      "validation_rules": [
+        "RULE_GRID_WIDTH",
+        "RULE_LIFTING_CAPACITY",
+        "RULE_INTERFACE_COMPATIBILITY",
+        "RULE_PRIMARY_GRID_600",
+        "RULE_COMPONENT_REQUIRES_SUBSYSTEM",
+        "RULE_FIXED_FLEXIBLE_FREE_CLASSIFICATION"
+      ],
+      "status": {
+        "maturity": "concept",
+        "design_freeze": false,
+        "version": "0.1.0"
+      },
+      "evidence": [
+        "PROTO_WALL_FLOOR_001"
+      ],
+      "_meta": {
+        "collection": "modules",
+        "family": "floor_cassettes",
+        "source_file": "FLOOR_1200_2400_STRUCT_A.yaml",
+        "source_path": "modules/floor_cassettes/FLOOR_1200_2400_STRUCT_A.yaml"
+      }
+    },
+    {
+      "id": "FLOOR_2400_6000_STRUCT_A",
+      "name": "Structural floor cassette 2400 x 6000 Type A",
+      "type": "floor_cassette",
+      "category": "structural_floor",
+      "subsystem": "structure",
+      "flexibility_class": "fixed",
+      "component_format": "cassette_component",
+      "dimensions_mm": {
+        "width": 2400,
+        "length": 6000,
+        "depth": 300
+      },
+      "mass_kg": 720,
+      "grid": {
+        "width_increment_mm": 600,
+        "length_increment_mm": 600,
+        "grid_aligned": true
+      },
+      "performance": {
+        "structural_role": "spanning_floor",
+        "fire_rating": "TBC",
+        "acoustic_rating": "TBC",
+        "vibration_performance": "TBC"
+      },
+      "parts": [
+        "PART_LIFTING_INSERT_M16_001"
+      ],
+      "ports": [
+        {
+          "id": "support_zone",
+          "type": "wall_support_zone",
+          "location": "top_face"
+        },
+        {
+          "id": "left_edge",
+          "type": "floor_edge_connection",
+          "location": "left_edge"
+        },
+        {
+          "id": "right_edge",
+          "type": "floor_edge_connection",
+          "location": "right_edge"
+        },
+        {
+          "id": "front_edge",
+          "type": "floor_edge_connection",
+          "location": "front_edge"
+        },
+        {
+          "id": "rear_edge",
+          "type": "floor_edge_connection",
+          "location": "rear_edge"
+        }
+      ],
+      "lifting_points": [
+        {
+          "id": "LP_01",
+          "x_mm": 600,
+          "y_mm": 1500,
+          "z_mm": 300,
+          "load_rating_kg": 750
+        },
+        {
+          "id": "LP_02",
+          "x_mm": 1800,
+          "y_mm": 1500,
+          "z_mm": 300,
+          "load_rating_kg": 750
+        },
+        {
+          "id": "LP_03",
+          "x_mm": 600,
+          "y_mm": 4500,
+          "z_mm": 300,
+          "load_rating_kg": 750
+        },
+        {
+          "id": "LP_04",
+          "x_mm": 1800,
+          "y_mm": 4500,
+          "z_mm": 300,
+          "load_rating_kg": 750
+        }
+      ],
+      "allowed_interfaces": [
+        "IF_WALL_TO_FLOOR_001"
+      ],
+      "validation_rules": [
+        "RULE_GRID_WIDTH",
+        "RULE_LIFTING_CAPACITY",
+        "RULE_INTERFACE_COMPATIBILITY",
+        "RULE_PRIMARY_GRID_600",
+        "RULE_COMPONENT_REQUIRES_SUBSYSTEM",
+        "RULE_FIXED_FLEXIBLE_FREE_CLASSIFICATION"
+      ],
+      "status": {
+        "maturity": "concept",
+        "design_freeze": false,
+        "version": "0.1.0"
+      },
+      "evidence": [
+        "PROTO_WALL_FLOOR_001"
+      ],
+      "_meta": {
+        "collection": "modules",
+        "family": "floor_cassettes",
+        "source_file": "FLOOR_2400_6000_STRUCT_A.yaml",
+        "source_path": "modules/floor_cassettes/FLOOR_2400_6000_STRUCT_A.yaml"
+      }
+    },
+    {
       "id": "WALL_1200_2700_EXT_A",
       "name": "External wall panel 1200 x 2700 Type A",
       "type": "wall_panel",
