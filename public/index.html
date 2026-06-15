@@ -221,6 +221,8 @@
         <div class="legend-row"><span class="dot" style="background:#7c3aed"></span>Interface</div>
         <div class="legend-row"><span class="dot" style="background:#ef4444"></span>Rule</div>
         <div class="legend-row"><span class="dot" style="background:#64748b"></span>Evidence</div>
+        <div class="legend-row"><span class="dot" style="background:#0891b2"></span>Assembly Sequence</div>
+        
       </div>
 
       <div class="toolbar">
@@ -252,7 +254,8 @@
         part: "#d97706",
         interface: "#7c3aed",
         rule: "#ef4444",
-        evidence: "#64748b"
+        evidence: "#64748b",
+        assembly_sequence: "#0891b2",
     };
 
     const svg = d3.select("#graph");
@@ -313,13 +316,15 @@
         const interfaces = platformPackage.interfaces || [];
         const rules = platformPackage.rules || [];
         const evidence = platformPackage.evidence || [];
+        const assemblySequences = platformPackage.assembly_sequences || [];
 
         const collections = [
             { id: "GROUP_MODULES", type: "group", label: "Modules", key: "modules" },
             { id: "GROUP_PARTS", type: "group", label: "Parts", key: "parts" },
             { id: "GROUP_INTERFACES", type: "group", label: "Interfaces", key: "interfaces" },
             { id: "GROUP_RULES", type: "group", label: "Rules", key: "rules" },
-            { id: "GROUP_EVIDENCE", type: "group", label: "Evidence", key: "evidence" }
+            { id: "GROUP_EVIDENCE", type: "group", label: "Evidence", key: "evidence" },
+            { id: "GROUP_ASSEMBLY_SEQUENCES", type: "group", label: "Assembly Sequences", key: "assembly_sequences" }
         ];
 
         collections.forEach(group => {
@@ -412,6 +417,50 @@
             addLink(links, familyId, rule.id, "contains");
         });
 
+        // Assembly Sequence
+        assemblySequences.forEach(sequence => {
+          const family = sequence._meta?.family || sequence.type || "general";
+
+          const familyId = ensureFamilyNode(
+            "GROUP_ASSEMBLY_SEQUENCES",
+            "assembly_sequences",
+            family
+          );
+
+          addNode(
+            nodes,
+            sequence.id,
+            "assembly_sequence",
+            sequence.id,
+            sequence
+          );
+
+          addLink(links, familyId, sequence.id, "contains");
+
+          const inputs = sequence.inputs || {};
+          const appliesTo = sequence.applies_to || {};
+
+          (inputs.modules || []).forEach(moduleId => {
+            addLink(links, sequence.id, moduleId, "installs");
+          });
+
+          (inputs.parts || []).forEach(partId => {
+            addLink(links, sequence.id, partId, "uses part");
+          });
+
+          (appliesTo.interfaces || []).forEach(interfaceId => {
+            addLink(links, sequence.id, interfaceId, "implements interface");
+          });
+
+          (sequence.validation_rules || []).forEach(ruleId => {
+            addLink(links, sequence.id, ruleId, "checked by");
+          });
+
+          (sequence.evidence || []).forEach(evidenceId => {
+            addLink(links, sequence.id, evidenceId, "supported by");
+          });
+        });
+
         // Evidence
         evidence.forEach(item => {
             const family = item._meta?.family || "general";
@@ -480,6 +529,7 @@
             if (d.type === "group") return 70;
             if (d.type === "family") return 55;
             if (d.type === "module") return 45;
+            if (d.type === "assembly_sequence") return 14;
             return 30;
     }));
 
